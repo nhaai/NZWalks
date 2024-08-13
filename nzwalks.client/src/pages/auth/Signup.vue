@@ -63,7 +63,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-
+import { createRequest } from '../../services/apiService'
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
@@ -71,24 +71,58 @@ const { init } = useToast()
 const formData = reactive({
   email: '',
   password: '',
-  repeatPassword: '',
+  roles: []
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({
-      message: "You've successfully signed up",
-      color: 'success',
-    })
-    push({ name: 'dashboard' })
+    try {
+      await createRequest({
+        api: {
+          url: 'https://localhost:7216/api/Auth/Register',
+          method: 'POST',
+          data: {
+            username: formData.email,  // Assuming you're using email as the username
+            password: formData.password,
+            roles: formData.roles.length > 0 ? formData.roles : ["Reader"]
+          },
+        },
+        onSuccess: (data) => {
+          init({
+            message: "You've successfully signed up",
+            color: 'success',
+          });
+          push({ name: 'dashboard' });
+        },
+        onError: (data) => {
+          init({
+            message: 'Registration failed. Please check your details and try again.',
+            color: 'error',
+          });
+        },
+        onRequestError: (error) => {
+          init({
+            message: 'An error occurred. Please try again later.',
+            color: 'error',
+          });
+          console.error('Request failed:', error);
+        },
+      });
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      init({
+        message: 'An unexpected error occurred. Please try again later.',
+        color: 'error',
+      });
+    }
   }
 }
 
 const passwordRules: ((v: string) => boolean | string)[] = [
   (v) => !!v || 'Password field is required',
   (v) => (v && v.length >= 8) || 'Password must be at least 8 characters long',
-  (v) => (v && /[A-Za-z]/.test(v)) || 'Password must contain at least one letter',
+ /* (v) => (v && /[A-Za-z]/.test(v)) || 'Password must contain at least one letter',
   (v) => (v && /\d/.test(v)) || 'Password must contain at least one number',
-  (v) => (v && /[!@#$%^&*(),.?":{}|<>]/.test(v)) || 'Password must contain at least one special character',
+  (v) => (v && /[!@#$%^&*(),.?":{}|<>]/.test(v)) || 'Password must contain at least one special character',*/
 ]
 </script>

@@ -49,7 +49,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
-
+import { createRequest } from '../../services/apiService'
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
@@ -60,10 +60,36 @@ const formData = reactive({
   keepLoggedIn: false,
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({ message: "You've successfully logged in", color: 'success' })
-    push({ name: 'dashboard' })
+    try {
+      await createRequest({
+        api: {
+          url: 'https://localhost:7216/api/Auth/Login',
+          method: 'POST',
+          data: {
+            username: formData.email,
+            password: formData.password,
+          },
+        },
+        onSuccess: (data) => {
+          init({ message: "You've successfully logged in", color: 'success' });
+          if (formData.keepLoggedIn) {
+            localStorage.setItem('token', data.token);
+          }
+          push({ name: 'dashboard' });
+        },
+        onError: (data) => {
+          init({ message: 'Invalid email or password', color: 'error' });
+        },
+        onRequestError: (error) => {
+          init({ message: 'An error occurred. Please try again later.', color: 'error' });
+          console.error('Request failed:', error);
+        },
+      });
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    }
   }
 }
 </script>

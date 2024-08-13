@@ -115,7 +115,15 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 6;
     options.Password.RequiredUniqueChars = 1;
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .WithOrigins("https://localhost:5173") // Allow your frontend origin
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+});
 var app = builder.Build();
 var versionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
@@ -131,7 +139,7 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
-
+app.UseCors("AllowLocalhost");
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseHttpsRedirection();
