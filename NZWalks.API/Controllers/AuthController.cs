@@ -51,7 +51,7 @@ namespace NZWalks.API.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
-            var user = await userManager.FindByEmailAsync(loginRequestDto.Username); // reader@yopmail.com / Reader@123
+            var user = await userManager.FindByEmailAsync(loginRequestDto.Username);
 
             if (user != null)
             {

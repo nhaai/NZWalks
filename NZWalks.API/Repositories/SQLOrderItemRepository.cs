@@ -40,10 +40,11 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            existingOrderItem.OrderId = orderItem.OrderId;
+            existingOrderItem.IsAvailable = orderItem.IsAvailable;
+            existingOrderItem.ProductCount = orderItem.ProductCount;
+            existingOrderItem.BuyingPrice = orderItem.BuyingPrice;
+            existingOrderItem.Total = orderItem.Total;
             existingOrderItem.ProductId = orderItem.ProductId;
-            existingOrderItem.Quantity = orderItem.Quantity;
-            existingOrderItem.UpdatedAt = orderItem.UpdatedAt;
 
             await dbContext.SaveChangesAsync();
 

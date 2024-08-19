@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Multiplayer Games",
+    "slug": "multiplayer-games"
+  },
+  {
+    "id": 2,
+    "name": "Gun Games",
+    "slug": "gun-games"
+  },
+  {
+    "id": 3,
+    "name": "Minicraft Games",
+    "slug": "minicraft-games"
+  },
+  {
+    "id": 4,
+    "name": "Popular Games",
+    "slug": "popular-games"
+  }
+]

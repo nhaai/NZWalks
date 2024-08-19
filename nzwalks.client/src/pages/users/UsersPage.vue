@@ -76,6 +76,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
           <VaButtonToggle
+            v-show="false"
             v-model="filters.isActive"
             color="background-element"
             border-color="background-element"

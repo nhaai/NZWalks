@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace NZWalks.API.Migrations.NZWalksDb
 {
     /// <inheritdoc />
@@ -19,6 +21,7 @@ namespace NZWalks.API.Migrations.NZWalksDb
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
                     ParentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -62,26 +65,6 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sku = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Regions",
                 columns: table => new
                 {
@@ -115,10 +98,7 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AddressLine1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AddressLine2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -148,52 +128,33 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SessionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UnitPrice = table.Column<double>(type: "float", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: true),
+                    Purchases = table.Column<int>(type: "int", nullable: true),
+                    Views = table.Column<int>(type: "int", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductCategories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Categories_CategoryId",
+                        name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -227,17 +188,35 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GrandTotal = table.Column<double>(type: "float", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Carts_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Total = table.Column<double>(type: "float", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    GrandTotal = table.Column<double>(type: "float", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -246,8 +225,7 @@ namespace NZWalks.API.Migrations.NZWalksDb
                         name: "FK_Orders_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -275,16 +253,45 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartLines",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: true),
+                    ProductCount = table.Column<int>(type: "int", nullable: true),
+                    BuyingPrice = table.Column<double>(type: "float", nullable: true),
+                    Total = table.Column<double>(type: "float", nullable: true),
+                    CartId = table.Column<int>(type: "int", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartLines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartLines_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CartLines_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: true),
+                    ProductCount = table.Column<int>(type: "int", nullable: true),
+                    BuyingPrice = table.Column<double>(type: "float", nullable: true),
+                    Total = table.Column<double>(type: "float", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -293,20 +300,40 @@ namespace NZWalks.API.Migrations.NZWalksDb
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Description", "IsActive", "Name", "ParentId" },
+                values: new object[,]
+                {
+                    { 1, null, true, "Consoles", null },
+                    { 2, null, true, "Games", null },
+                    { 3, null, true, "Accessories", null },
+                    { 4, null, true, "Cards", null },
+                    { 5, null, true, "Sale", null }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductId",
-                table: "CartItems",
+                name: "IX_CartLines_CartId",
+                table: "CartLines",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartLines_ProductId",
+                table: "CartLines",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_UserId",
+                table: "Carts",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentId",
@@ -329,14 +356,9 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductCategories_CategoryId",
-                table: "ProductCategories",
+                name: "IX_Products_CategoryId",
+                table: "Products",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductCategories_ProductId",
-                table: "ProductCategories",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRole_RoleId",
@@ -358,7 +380,7 @@ namespace NZWalks.API.Migrations.NZWalksDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "CartLines");
 
             migrationBuilder.DropTable(
                 name: "Images");
@@ -367,19 +389,16 @@ namespace NZWalks.API.Migrations.NZWalksDb
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "ProductCategories");
-
-            migrationBuilder.DropTable(
                 name: "UserRole");
 
             migrationBuilder.DropTable(
                 name: "Walks");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Carts");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -395,6 +414,9 @@ namespace NZWalks.API.Migrations.NZWalksDb
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

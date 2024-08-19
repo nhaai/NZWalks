@@ -79,11 +79,10 @@ builder.Services.AddDbContext<NZWalksDbContext>(
 builder.Services.AddDbContext<NZWalksAuthDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksAuthConnectionString"))
 );
-builder.Services.AddScoped<ICartItemRepository, SQLCartItemRepository>();
+builder.Services.AddScoped<ICartRepository, SQLCartRepository>();
 builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
 builder.Services.AddScoped<IOrderItemRepository, SQLOrderItemRepository>();
 builder.Services.AddScoped<IOrderRepository, SQLOrderRepository>();
-builder.Services.AddScoped<IProductCategoryRepository, SQLProductCategoryRepository>();
 builder.Services.AddScoped<IProductRepository, SQLProductRepository>();
 builder.Services.AddScoped<ITokenRepository, SQLTokenRepository>();
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();

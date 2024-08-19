@@ -13,34 +13,40 @@ namespace NZWalks.API.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Order>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
-            string? sortBy = null, bool isAccending = true, int pageNumber = 1, int pageSize = 20)
+        public async Task<(List<Order>, int)> GetAllAsync(SearchFilter searchFilter)
         {
             var orders = dbContext.Orders.AsQueryable();
 
             // filtering
-            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            if (!string.IsNullOrWhiteSpace(searchFilter.FilterOn) && !string.IsNullOrWhiteSpace(searchFilter.FilterQuery))
             {
-                if (filterOn.Equals("Code", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.FilterOn.Equals("Code", StringComparison.OrdinalIgnoreCase))
                 {
-                    orders = orders.Where(x => x.Code.Contains(filterQuery));
+                    orders = orders.Where(x => x.Code.Contains(searchFilter.FilterQuery));
                 }
             }
 
             // sorting
-            if (!string.IsNullOrWhiteSpace(sortBy))
+            if (!string.IsNullOrWhiteSpace(searchFilter.SortBy))
             {
-                if (sortBy.Equals("CreatedAt", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.SortBy.Equals("CreatedAt", StringComparison.OrdinalIgnoreCase))
                 {
-                    orders = isAccending ? orders.OrderBy(x => x.CreatedAt) : orders.OrderByDescending(x => x.CreatedAt);
+                    orders = searchFilter.IsAccending == true
+                        ? orders.OrderBy(x => x.CreatedAt)
+                        : orders.OrderByDescending(x => x.CreatedAt);
                 }
             }
 
-            // pagination
-            var skipResults = (pageNumber - 1) * pageSize;
-            orders = orders.Skip(skipResults).Take(pageSize);
+            var totalItemCount = await orders.CountAsync();
 
-            return await orders.ToListAsync();
+            // pagination
+            if (searchFilter.PageNumber != null)
+            {
+                var skipResults = ((int)searchFilter.PageNumber - 1) * searchFilter.PageSize;
+                orders = orders.Skip(skipResults).Take(searchFilter.PageSize);
+            }
+
+            return (await orders.ToListAsync(), totalItemCount);
         }
 
         public async Task<Order?> GetByIdAsync(int id)
@@ -65,10 +71,7 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            existingOrder.UserId = order.UserId;
-            existingOrder.Code = order.Code;
-            existingOrder.Total = order.Total;
-            existingOrder.Status = order.Status;
+            existingOrder.GrandTotal = order.GrandTotal;
             existingOrder.UpdatedAt = order.UpdatedAt;
 
             await dbContext.SaveChangesAsync();

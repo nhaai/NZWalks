@@ -23,7 +23,7 @@
     >
       {{ t('helpAndSupport') }}
     </VaButton>
-    <NotificationDropdown v-show="false" class="app-navbar-actions__item" />
+    <!--<NotificationDropdown class="app-navbar-actions__item" />-->
     <ProfileDropdown class="app-navbar-actions__item app-navbar-actions__item--profile mr-1" />
   </div>
 </template>

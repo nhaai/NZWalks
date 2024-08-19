@@ -24,7 +24,7 @@ namespace NZWalks.API.Repositories
             {
                 if (searchFilter.FilterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    users = users.Where(x => x.LastName.Contains(searchFilter.FilterQuery) || x.FirstName.Contains(searchFilter.FilterQuery));
+                    users = users.Where(x => x.FullName.Contains(searchFilter.FilterQuery));
                 }
             }
 
@@ -34,12 +34,12 @@ namespace NZWalks.API.Repositories
                 if (searchFilter.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
                     users = searchFilter.IsAccending == true
-                        ? users.OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
-                        : users.OrderByDescending(x => x.LastName).ThenByDescending(x => x.FirstName);
+                        ? users.OrderBy(x => x.FullName)
+                        : users.OrderByDescending(x => x.FullName);
                 }
             }
 
-            var count = await users.CountAsync();
+            var totalItemCount = await users.CountAsync();
 
             // pagination
             if (searchFilter.PageNumber != null)
@@ -48,7 +48,7 @@ namespace NZWalks.API.Repositories
                 users = users.Skip(skipResults).Take(searchFilter.PageSize);
             }
 
-            return (await users.ToListAsync(), count);
+            return (await users.ToListAsync(), totalItemCount);
         }
 
         public async Task<User?> GetByIdAsync(string id)
@@ -73,14 +73,15 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            existingUser.Title = user.Title;
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
+            existingUser.FullName = user.FullName;
             existingUser.AddressLine1 = user.AddressLine1;
             existingUser.AddressLine2 = user.AddressLine2;
             existingUser.City = user.City;
             existingUser.PostalCode = user.PostalCode;
             existingUser.Country = user.Country;
+            existingUser.AvatarUrl = user.AvatarUrl;
+            existingUser.IsActive = user.IsActive;
+            existingUser.Notes = user.Notes;
 
             await dbContext.SaveChangesAsync();
 
@@ -96,7 +97,8 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            dbContext.Users.Remove(existingUser);
+            existingUser.IsActive = false;
+            // dbContext.Users.Remove(existingUser);
             await dbContext.SaveChangesAsync();
 
             return existingUser;

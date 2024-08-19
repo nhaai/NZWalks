@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Models.Domain;
-using System.Reflection.Emit;
 
 namespace NZWalks.API.Data
 {

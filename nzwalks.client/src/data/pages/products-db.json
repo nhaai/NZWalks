@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "name": "Stickman Crazy Box",
+    "slug": "stickman-crazy-box",
+    "description": "A fantastic collection of 20 thrilling action games! You can choose from quick game or tournament mode.",
+    "sku": "STI-MUL-ONL",
+    "price": 4.30,
+    "stock": 100,
+    "image_url": "https://undertaleyellow.io/upload/imgs/stickman-crazy-box.png",
+    "category_id": 1
+  },
+  {
+    "id": 2,
+    "name": "Combat Reloaded",
+    "slug": "combat-reloaded",
+    "description": "An online multiplayer shooting game created by NadGames.",
+    "sku": "COM-GUN-ONL",
+    "price": 5.00,
+    "stock": 98,
+    "image_url": "https://www.gamekarma.com/images/games/193.png",
+    "category_id": 2
+  },
+  {
+    "id": 3,
+    "name": "Rainbow Obby",
+    "slug": "rainbow-obby",
+    "description": "An obby game in which you have to make it to the top of a huge obstacle course.",
+    "sku": "RAI-MIN-ONL",
+    "price": 4.20,
+    "stock": 75,
+    "image_url": "https://y8.com.vn/wp-content/uploads/thumbs/gamemonetize/R/rainbow-obby.jpg",
+    "category_id": 3
+  },
+  {
+    "id": 4,
+    "name": "Bumpy Flop",
+    "slug": "bumpy-flop",
+    "description": "A skill game where you have to run through a variety of obstacles to finish the stage.",
+    "sku": "BUM-POP-ONL",
+    "price": 4.40,
+    "stock": 30,
+    "image_url": "https://img.poki-cdn.com/cdn-cgi/image/quality=78,width=314,height=314,fit=cover,f=auto/452470dd1dbb3a0433f1558a36f0866443bb2c12e4c5fe7b1d33c2365e168e53.jpg",
+    "category_id": 4
+  }
+]
