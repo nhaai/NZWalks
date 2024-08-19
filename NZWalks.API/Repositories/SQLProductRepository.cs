@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
+using NZWalks.API.Models.DTO;
 
 namespace NZWalks.API.Repositories
 {
@@ -13,42 +14,41 @@ namespace NZWalks.API.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Product>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
-            string? sortBy = null, bool isAccending = true, int pageNumber = 1, int pageSize = 20)
+        public async Task<(List<Product>, int)> GetAllAsync(SearchFilter searchFilter)
         {
             var products = dbContext.Products.AsQueryable();
+            products = products.Where(x => x.IsActive == true);
 
             // filtering
-            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            if (!string.IsNullOrWhiteSpace(searchFilter.FilterOn) && !string.IsNullOrWhiteSpace(searchFilter.FilterQuery))
             {
-                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.FilterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    products = products.Where(x => x.Name.Contains(filterQuery));
-                }
-                else if (filterOn.Equals("Sku", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = products.Where(x => (x.Sku ?? "").Contains(filterQuery));
+                    products = products.Where(x => x.Name.Contains(searchFilter.FilterQuery));
                 }
             }
 
             // sorting
-            if (!string.IsNullOrWhiteSpace(sortBy))
+            if (!string.IsNullOrWhiteSpace(searchFilter.SortBy))
             {
-                if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    products = isAccending ? products.OrderBy(x => x.Name) : products.OrderByDescending(x => x.Name);
-                }
-                else if (sortBy.Equals("CreatedAt", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = isAccending ? products.OrderBy(x => x.CreatedAt) : products.OrderByDescending(x => x.CreatedAt);
+                    products = searchFilter.IsAccending == true
+                        ? products.OrderBy(x => x.Name)
+                        : products.OrderByDescending(x => x.Name);
                 }
             }
 
-            // pagination
-            var skipResults = (pageNumber - 1) * pageSize;
-            products = products.Skip(skipResults).Take(pageSize);
+            var totalItemCount = await products.CountAsync();
 
-            return await products.ToListAsync();
+            // pagination
+            if (searchFilter.PageNumber != null)
+            {
+                var skipResults = ((int)searchFilter.PageNumber - 1) * searchFilter.PageSize;
+                products = products.Skip(skipResults).Take(searchFilter.PageSize);
+            }
+
+            return (await products.ToListAsync(), totalItemCount);
         }
 
         public async Task<Product?> GetByIdAsync(int id)
@@ -58,6 +58,10 @@ namespace NZWalks.API.Repositories
 
         public async Task<Product> CreateAsync(Product product)
         {
+            product.Purchases = 0;
+            product.Views = 0;
+            product.CreatedAt = DateTime.Now;
+
             await dbContext.Products.AddAsync(product);
             await dbContext.SaveChangesAsync();
 
@@ -74,12 +78,15 @@ namespace NZWalks.API.Repositories
             }
 
             existingProduct.Name = product.Name;
+            existingProduct.Code = product.Code;
             existingProduct.Description = product.Description;
-            existingProduct.Sku = product.Sku;
-            existingProduct.Price = product.Price;
-            existingProduct.Stock = product.Stock;
+            existingProduct.Brand = product.Brand;
+            existingProduct.UnitPrice = product.UnitPrice;
+            existingProduct.Quantity = product.Quantity;
             existingProduct.ImageUrl = product.ImageUrl;
-            existingProduct.UpdatedAt = product.UpdatedAt;
+            existingProduct.IsActive = product.IsActive;
+            existingProduct.UpdatedAt = DateTime.Now;
+            existingProduct.CategoryId = product.CategoryId;
 
             await dbContext.SaveChangesAsync();
 

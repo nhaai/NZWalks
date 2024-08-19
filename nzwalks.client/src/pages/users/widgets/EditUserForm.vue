@@ -18,15 +18,20 @@ const props = defineProps({
 })
 
 const defaultNewUser: User = {
-  id: -1,
+  id: '',
   avatar: '',
   fullname: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  postalCode: '',
+  country: '',
   role: 'user',
-  username: '',
+  userName: '',
   notes: '',
   email: '',
+  phoneNumber: '',
   active: true,
-  projects: [],
 }
 
 const newUser = ref<User>({ ...defaultNewUser })
@@ -63,7 +68,8 @@ watch(
 const avatar = ref<File>()
 
 const makeAvatarBlobUrl = (avatar: File) => {
-  return URL.createObjectURL(avatar)
+  return 'https://randomuser.me/api/portraits/men/' + Math.floor(Math.random() * 100) + '.jpg';
+  // return URL.createObjectURL(avatar)
 }
 
 watch(avatar, (newAvatar) => {
@@ -113,39 +119,62 @@ const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, tot
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newUser.fullname"
-          label="Full name"
+          label="Full Name"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="fullname"
         />
         <VaInput
-          v-model="newUser.username"
-          label="Username"
+          v-model="newUser.phoneNumber"
+          label="Phone Number"
           class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="username"
+          name="phoneNumber"
         />
       </div>
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
-          v-model="newUser.email"
+          v-model="newUser.addressLine1"
+          label="Address Line 1"
+          class="w-full sm:w-1/2"
+          name="addressLine1"
+        />
+        <VaInput
+          v-model="newUser.addressLine2"
+          label="Address Line 2"
+          class="w-full sm:w-1/2"
+          name="addressLine2"
+        />
+      </div>
+      <div class="flex gap-4 flex-col sm:flex-row w-full">
+        <VaInput
+          v-model="newUser.city"
+          label="City"
+          class="w-full sm:w-1/2"
+          name="city"
+        />
+        <VaInput
+          v-model="newUser.postalCode"
+          label="Postal Code"
+          class="w-full sm:w-1/2"
+          name="postalCode"
+        />
+      </div>
+      <div class="flex gap-4 flex-col sm:flex-row w-full">
+        <VaInput
+          v-if="!newUser.id"
+          v-model="newUser.userName"
           label="Email"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
-          name="email"
+          name="userName"
         />
-        <VaSelect
-          v-model="newUser.projects"
-          label="Projects"
+        <VaInput
+          v-if="!newUser.id"
+          v-model="newUser.password"
+          label="Password"
           class="w-full sm:w-1/2"
-          :options="projects"
-          :rules="[validators.required]"
-          name="projects"
-          text-by="project_name"
-          track-by="id"
-          multiple
-          :max-visible-options="2"
-        />
+          :rules="[validators.required, validators.password]"
+          name="password" />
       </div>
 
       <div class="flex gap-4 w-full">

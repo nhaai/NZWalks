@@ -9,9 +9,12 @@ namespace NZWalks.API.Mappings
         public AutoMapperProfiles()
         {
             CreateMap<SearchFilter, SearchFilterDto>().ReverseMap();
-            CreateMap<CartItem, CartItemDto>().ReverseMap();
-            CreateMap<AddCartItemRequestDto, CartItem>().ReverseMap();
-            CreateMap<UpdateCartItemRequestDto, CartItem>().ReverseMap();
+            CreateMap<Cart, CartDto>().ReverseMap();
+            CreateMap<AddCartRequestDto, Cart>().ReverseMap();
+            CreateMap<UpdateCartRequestDto, Cart>().ReverseMap();
+            CreateMap<CartLine, CartLineDto>().ReverseMap();
+            CreateMap<AddCartLineRequestDto, CartLine>().ReverseMap();
+            CreateMap<UpdateCartLineRequestDto, CartLine>().ReverseMap();
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<AddCategoryRequestDto, Category>().ReverseMap();
             CreateMap<UpdateCategoryRequestDto, Category>().ReverseMap();
@@ -27,9 +30,6 @@ namespace NZWalks.API.Mappings
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<AddProductRequestDto, Product>().ReverseMap();
             CreateMap<UpdateProductRequestDto, Product>().ReverseMap();
-            CreateMap<ProductCategory, ProductCategoryDto>().ReverseMap();
-            CreateMap<AddProductCategoryRequestDto, ProductCategory>().ReverseMap();
-            CreateMap<UpdateProductCategoryRequestDto, ProductCategory>().ReverseMap();
 
             CreateMap<Region, RegionDto>().ReverseMap();
             CreateMap<AddRegionRequestDto, Region>().ReverseMap();

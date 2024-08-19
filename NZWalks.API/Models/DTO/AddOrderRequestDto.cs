@@ -2,9 +2,8 @@
 {
     public class AddOrderRequestDto
     {
-        public int CustomerId { get; set; }
-        public string Code { get; set; }
-        public double Total { get; set; }
-        public int Status { get; set; }
+        public double? GrandTotal { get; set; }
+        public int? UserId { get; set; }
+        public List<OrderItemDto> OrderItems { get; set; } = [];
     }
 }

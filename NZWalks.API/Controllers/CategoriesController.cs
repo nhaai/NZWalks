@@ -4,6 +4,8 @@ using NZWalks.API.CustomActionFilters;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Text.Json;
+using X.PagedList;
 
 namespace NZWalks.API.Controllers
 {
@@ -23,20 +25,20 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpGet]
-        // [Authorize(Roles = "Reader")]
-        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
-            [FromQuery] string? sortBy, [FromQuery] bool? isAccending,
-            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+        public async Task<IActionResult> GetAll([FromQuery] SearchFilterDto searchFilterDto)
         {
-            var categoriesDomainModel = await categoryRepository.GetAllAsync(filterOn, filterQuery,
-                 sortBy, isAccending ?? true, pageNumber, pageSize);
-            var categoriesDto = mapper.Map<List<CategoryDto>>(categoriesDomainModel);
+            var searchDomainModel = mapper.Map<SearchFilter>(searchFilterDto);
+            (var categoriesDomainModel, int totalItemCount) = await categoryRepository.GetAllAsync(searchDomainModel);
 
-            return Ok(categoriesDto);
+            var categoriesDto = mapper.Map<List<CategoryDto>>(categoriesDomainModel);
+            var categoriesPagedList = new StaticPagedList<CategoryDto>(categoriesDto, searchFilterDto.PageNumber, searchFilterDto.PageSize, totalItemCount);
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(categoriesPagedList.GetMetaData()));
+
+            return Ok(categoriesPagedList);
         }
 
         [HttpGet("{id:int}")]
-        // [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var categoryDomainModel = await categoryRepository.GetByIdAsync(id);
@@ -53,7 +55,6 @@ namespace NZWalks.API.Controllers
 
         [HttpPost]
         [ValidateModel]
-        // [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddCategoryRequestDto addCategoryRequestDto)
         {
             var categoryDomainModel = mapper.Map<Category>(addCategoryRequestDto);
@@ -67,7 +68,6 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("{id:int}")]
         [ValidateModel]
-        // [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
         {
             var categoryDomainModel = mapper.Map<Category>(updateCategoryRequestDto);
@@ -85,7 +85,6 @@ namespace NZWalks.API.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        // [Authorize(Roles = "Writer,Reader")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var categoryDomainModel = await categoryRepository.DeleteAsync(id);

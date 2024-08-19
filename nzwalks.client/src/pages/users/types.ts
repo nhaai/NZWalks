@@ -3,10 +3,16 @@ import { Project } from '../projects/types'
 export type UserRole = 'admin' | 'user' | 'owner'
 
 export type User = {
-  id: number
+  id: string
   fullname: string
-  email: string
+  addressLine1: string
+  addressLine2: string
+  city: string
+  postalCode: string
+  country: string
   username: string
+  email: string
+  phoneNumber: string
   role: UserRole
   avatar: string
   projects: Project[]

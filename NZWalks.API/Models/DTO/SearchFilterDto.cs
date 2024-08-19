@@ -6,7 +6,7 @@
         public string? FilterQuery { get; set; }
         public string? SortBy { get; set; }
         public bool? IsAccending { get; set; }
-        public int? PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize
         {
             get => pageSize;

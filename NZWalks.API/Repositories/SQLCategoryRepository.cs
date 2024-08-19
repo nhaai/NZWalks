@@ -13,34 +13,41 @@ namespace NZWalks.API.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Category>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
-            string? sortBy = null, bool isAccending = true, int pageNumber = 1, int pageSize = 20)
+        public async Task<(List<Category>, int)> GetAllAsync(SearchFilter searchFilter)
         {
             var categories = dbContext.Categories.AsQueryable();
+            categories = categories.Where(x => x.IsActive == true);
 
             // filtering
-            if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
+            if (!string.IsNullOrWhiteSpace(searchFilter.FilterOn) && !string.IsNullOrWhiteSpace(searchFilter.FilterQuery))
             {
-                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.FilterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    categories = categories.Where(x => x.Name.Contains(filterQuery));
+                    categories = categories.Where(x => x.Name.Contains(searchFilter.FilterQuery));
                 }
             }
 
             // sorting
-            if (!string.IsNullOrWhiteSpace(sortBy))
+            if (!string.IsNullOrWhiteSpace(searchFilter.SortBy))
             {
-                if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (searchFilter.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    categories = isAccending ? categories.OrderBy(x => x.Name) : categories.OrderByDescending(x => x.Name);
+                    categories = searchFilter.IsAccending == true
+                        ? categories.OrderBy(x => x.Name)
+                        : categories.OrderByDescending(x => x.Name);
                 }
             }
 
-            // pagination
-            var skipResults = (pageNumber - 1) * pageSize;
-            categories = categories.Skip(skipResults).Take(pageSize);
+            var totalItemCount = await categories.CountAsync();
 
-            return await categories.ToListAsync();
+            // pagination
+            if (searchFilter.PageNumber != null)
+            {
+                var skipResults = ((int)searchFilter.PageNumber - 1) * searchFilter.PageSize;
+                categories = categories.Skip(skipResults).Take(searchFilter.PageSize);
+            }
+
+            return (await categories.ToListAsync(), totalItemCount);
         }
 
         public async Task<Category?> GetByIdAsync(int id)
@@ -67,6 +74,7 @@ namespace NZWalks.API.Repositories
 
             existingCategory.Name = category.Name;
             existingCategory.Description = category.Description;
+            existingCategory.IsActive = category.IsActive;
             existingCategory.ParentId = category.ParentId;
 
             await dbContext.SaveChangesAsync();
@@ -83,7 +91,8 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            dbContext.Categories.Remove(existingCategory);
+            existingCategory.IsActive = false;
+            // dbContext.Categories.Remove(existingCategory);
             await dbContext.SaveChangesAsync();
 
             return existingCategory;

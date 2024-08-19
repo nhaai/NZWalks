@@ -19,13 +19,27 @@ export default {
       },
     },
     {
+      name: 'categories',
+      displayName: 'menu.categories',
+      meta: {
+        icon: 'folder_shared',
+      },
+    },
+    {
+      name: 'products',
+      displayName: 'menu.products',
+      meta: {
+        icon: 'folder_shared',
+      },
+    },
+    {
       name: 'users',
       displayName: 'menu.users',
       meta: {
         icon: 'group',
       },
     },
-    {
+    /*{
       name: 'projects',
       displayName: 'menu.projects',
       meta: {
@@ -88,7 +102,7 @@ export default {
       meta: {
         icon: 'vuestic-iconset-files',
       },
-    },
+    },*/
     {
       name: 'preferences',
       displayName: 'menu.preferences',

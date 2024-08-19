@@ -4,7 +4,7 @@ namespace NZWalks.API.Models.Domain
 {
     public class UserRole: IdentityUserRole<string>
     {
-        public virtual User User { get; set; }
-        public virtual Role Role { get; set; }
+        public User User { get; set; } = default!;
+        public Role Role { get; set; } = default!;
     }
 }
