@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SA51_CA_Project_Team10.Models;
+using SA51_CA_Project_Team10.Models.Domain;
 
-namespace SA51_CA_Project_Team10.API
+namespace SA51_CA_Project_Team10
 {
     public class NZWalksDbContext : DbContext
     {
