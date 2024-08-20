@@ -83,6 +83,8 @@ namespace NZWalks.API.Repositories
             existingProduct.Brand = product.Brand;
             existingProduct.UnitPrice = product.UnitPrice;
             existingProduct.Quantity = product.Quantity;
+            existingProduct.Purchases = product.Purchases;
+            existingProduct.Views = product.Views;
             existingProduct.ImageUrl = product.ImageUrl;
             existingProduct.IsActive = product.IsActive;
             existingProduct.UpdatedAt = DateTime.Now;
@@ -102,7 +104,8 @@ namespace NZWalks.API.Repositories
                 return null;
             }
 
-            dbContext.Products.Remove(existingProduct);
+            existingProduct.IsActive = false;
+            // dbContext.Products.Remove(existingProduct);
             await dbContext.SaveChangesAsync();
 
             return existingProduct;

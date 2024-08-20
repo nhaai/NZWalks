@@ -8,8 +8,10 @@ import { useVModel } from '@vueuse/core'
 const columns = defineVaDataTableColumns([
   { label: 'Name', key: 'name', sortable: true },
   { label: 'Brand', key: 'brand' },
-  { label: 'Quantity', key: 'quantity' },
-  { label: 'Price ($)', key: 'price' },
+  { label: 'In Stock', key: 'quantity' },
+  { label: 'Unit Price ($)', key: 'unitPrice' },
+  { label: 'Purchases', key: 'purchases' },
+  { label: 'Views', key: 'views' },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -57,12 +59,13 @@ const { confirm } = useModal()
 
 <template>
   <VaDataTable v-model:sort-by="sortByVModel"
-               v-model:sorting-order="sortingOrderVModel"
-               :columns="columns"
-               :items="products"
-               :loading="$props.loading">
+    v-model:sorting-order="sortingOrderVModel"
+    :columns="columns"
+    :items="products"
+    :loading="$props.loading">
     <template #cell(name)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
+        <VaAvatar :size="small" :src="rowData.imageUrl" />
         {{ rowData.name }}
       </div>
     </template>
@@ -85,19 +88,31 @@ const { confirm } = useModal()
       </div>
     </template>
 
+    <template #cell(purchases)="{ rowData }">
+      <div class="max-w-[120px] ellipsis">
+        {{ rowData.purchases }}
+      </div>
+    </template>
+
+    <template #cell(views)="{ rowData }">
+      <div class="max-w-[120px] ellipsis">
+        {{ rowData.views }}
+      </div>
+    </template>
+
     <template #cell(actions)="{ rowData }">
       <div class="flex gap-2 justify-end">
         <VaButton preset="primary"
-                  size="small"
-                  icon="mso-edit"
-                  aria-label="Edit product"
-                  @click="$emit('edit-product', rowData as Product)" />
+          size="small"
+          icon="mso-edit"
+          aria-label="Edit product"
+          @click="$emit('edit-product', rowData as Product)" />
         <VaButton preset="primary"
-                  size="small"
-                  icon="mso-delete"
-                  color="danger"
-                  aria-label="Delete product"
-                  @click="onProductDelete(rowData as Product)" />
+          size="small"
+          icon="mso-delete"
+          color="danger"
+          aria-label="Delete product"
+          @click="onProductDelete(rowData as Product)" />
       </div>
     </template>
   </VaDataTable>

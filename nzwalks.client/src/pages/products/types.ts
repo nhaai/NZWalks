@@ -4,11 +4,11 @@ export type Product = {
   code: string
   description: string
   brand: string
-  price: number
+  unitPrice: number
   quantity: number
   purchases: number
   views: number
-  image_url: string
+  imageUrl: string
   active: boolean
-  category_id: number
+  categoryId: number
 }
