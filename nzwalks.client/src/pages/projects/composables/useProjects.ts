@@ -25,7 +25,7 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
       ...unref(sorting),
       ...unref(pagination),
     })
-    projects.value = data as Project[]
+    projects.value = data as unknown as Project[]
 
     ignoreUpdates(() => {
       pagination.value = newPagination

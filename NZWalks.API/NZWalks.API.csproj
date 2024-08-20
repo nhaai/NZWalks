@@ -45,6 +45,7 @@
     <ProjectReference Include="..\nzwalks.client\nzwalks.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\shopping-cart\SA51_CA_Project_Team10.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,98 @@
+﻿@model IEnumerable<PurchasesViewModel>
+@{
+    ViewData["Title"] = "My Purchases";
+    bool havePastOrders = (bool)ViewData["HavePastOrders"];
+}
+
+@section Scripts
+{
+    <script src="~/js/my_purchases.js"></script>
+}
+
+<style>
+    .product-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .row-spacer {
+        height: 20px;
+    }
+
+    .product-cell {
+        width: 250px;
+    }
+</style>
+
+@if (havePastOrders)
+{
+    <div class="d-flex justify-content-center">
+        <table>
+            @foreach (var group in Model) // Loop through each group
+            {
+                <tr>
+                    <td class="border border-dark product-cell">
+                        <table class="w-100">
+                            <tr><td class="p-1 text-center w-100"><img src="@group.ImageLink.Substring(1)" class="border border-dark product-image" /></td></tr>
+                            <tr><td class="p-1 text-center font-weight-bold">@group.Name</td></tr>
+                            <tr><td class="p-1 text-center">@group.Description</td></tr>
+                            <tr><td class="p-1 text-center"><button type="button" class="btn btn-outline-dark btn-sm">Download</button></td></tr>
+                        </table>
+                    </td>
+                    <td class="border border-dark">
+                        <table>
+                            <tr><td class="p-1 font-weight-bold">Purchased On:</td><td class="p-1" id="product-@group.ProductId">@group.DateTime[0].ToString("d MMM yyyy")</td></tr>
+                            <tr><td class="p-1 font-weight-bold">Quantity:</td><td class="p-1">@group.Quantity</td></tr>
+                            @if (group.Quantity == 1) // If quantity == 1, insert activation code as normal text
+                            {
+                                @foreach (var item in group.ActivationCode)
+                                {
+                                    <tr><td class="p-1 font-weight-bold">Activation Code:</td><td class="p-1">@item</td></tr>
+                                }
+                            }
+                            else if (group.Quantity > 1) // If quantity > 1, insert activation codes in dropdown menu
+                            {
+                                <tr>
+                                    <td class="p-1 font-weight-bold">Activation Code:</td>
+                                    <td class="p-1">
+                                        <select class="custom-select custom-select-sm code-selector">
+                                            @foreach (var item in group.ActivationCode)
+                                            {
+                                                <option value="@item">@item</option>
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+                <tr><td class="row-spacer"></td></tr>
+            }
+        </table>
+    </div>
+}
+else
+{
+    <style>
+        .center_div {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+
+        .no_item_cart_description {
+            font-size: 26pt;
+            color: darkgrey;
+        }
+    </style>
+
+    <div class="center_div">
+        <p class="no_item_cart_description">You have no past purchases.</p>
+    </div>
+}

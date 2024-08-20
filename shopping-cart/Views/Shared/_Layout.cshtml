@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+
+@{
+    if ((string)ViewData["Title"] == "Libraries Gallery" && ViewData["Username"] != null)
+    {
+        ViewData["Main"] = $"Hello, {ViewData["Username"]}";
+    } else
+    {
+        ViewData["Main"] = ViewData["Title"];
+    }
+
+    string[] alert = new string[2];
+    if (TempData["Alert"] != null)
+    {
+        alert = ((string)TempData["Alert"]).Split("|");
+    }
+
+}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/table.css" />
+    <link rel="stylesheet" href="~/css/added.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <span class="navbar-brand" >@ViewData["Main"]</span>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse mr-auto">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if ((string)ViewData["Title"] == "View Cart")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Index">Continue Shopping</a>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-link text-dark" style="color:black !important;">|</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Checkout">Checkout</a>
+                            </li>
+                        }
+                        else if ((string)ViewData["Title"] == "Login")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Index">Gallery</a>
+                            </li>
+                        }
+
+                        @if ((string)ViewData["Title"] == "Libraries Gallery" || (string)ViewData["Title"] == "My Purchases")
+                        {
+                            if ((string)ViewData["Title"] == "Libraries Gallery")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Purchase" asp-action="Index">My Purchases</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Gallery" asp-action="Index">Home</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <span class="nav-link text-dark" style="color:black !important;">|</span>
+                            </li>
+                            @if (ViewData["Logged"] != null && (bool)ViewData["Logged"])
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark " asp-controller="Logout" asp-action="Index">Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="nav-link text-dark" asp-controller="Login" asp-action="Index">Login</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="ml-auto">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if ((string)ViewData["Title"] == "Libraries Gallery")
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Cart" asp-action="Index"><img src="~/images/cart_icon.png" height="40" width="40" /></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="text-dark" id="cartnum" asp-controller="Cart" asp-action="Index">@ViewData["CartQuantity"]</a>
+                            </li>
+                        }
+                        else if ((string)ViewData["Title"] == "View Cart")
+                        {
+                            <li class="nav-item">
+                                <a id ="totalPrice" class="nav-link text-dark" style="color:black !important;">Total: $@ViewData["Total"]</a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["Alert"] != null)
+            {
+                <div class="alert alert-@alert[0] fade show" role="alert">
+                    @alert[1]
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
