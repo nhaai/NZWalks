@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SA51_CA_Project_Team10.Models.Domain;
+using System.Collections.Generic;
 namespace SA51_CA_Project_Team10.DBs
 {
     public class NZWalksAuthDbContext : IdentityDbContext<
