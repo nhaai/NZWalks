@@ -18,6 +18,7 @@ namespace NZWalks.API.Repositories
         public async Task<(List<User>, int)> GetAllAsync(SearchFilter searchFilter)
         {
             var users = dbContext.Users.Include("UserRoles.Role").AsQueryable();
+            users = users.Where(x => x.IsActive == true);
 
             // filtering
             if (!string.IsNullOrWhiteSpace(searchFilter.FilterOn) && !string.IsNullOrWhiteSpace(searchFilter.FilterQuery))

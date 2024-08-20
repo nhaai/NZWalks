@@ -62,6 +62,7 @@ namespace NZWalks.API.Controllers
         public async Task<IActionResult> Create([FromBody] AddUserRequestDto addUserRequestDto)
         {
             var userDomainModel = mapper.Map<User>(addUserRequestDto);
+            userDomainModel.Email = addUserRequestDto.UserName;
             var identityResult = await userManager.CreateAsync(userDomainModel, addUserRequestDto.Password);
 
             if (identityResult.Succeeded)

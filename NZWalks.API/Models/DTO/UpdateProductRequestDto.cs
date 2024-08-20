@@ -8,14 +8,13 @@ namespace NZWalks.API.Models.DTO
         public string? Code { get; set; }
         public string? Description { get; set; }
         public string? Brand { get; set; }
-        [JsonPropertyName("price")]
         public double? UnitPrice { get; set; }
         public int? Quantity { get; set; }
-        [JsonPropertyName("image_url")]
+        public int? Purchases { get; set; }
+        public int? Views { get; set; }
         public string? ImageUrl { get; set; }
         [JsonPropertyName("active")]
         public bool? IsActive { get; set; }
-        [JsonPropertyName("category_id")]
         public int? CategoryId { get; set; }
     }
 }
