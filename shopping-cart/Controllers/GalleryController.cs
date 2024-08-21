@@ -33,12 +33,12 @@ namespace SA51_CA_Project_Team10.Controllers
             }
 
             User user = null; // If user data is available, populate this variable accordingly
-            searchFilterDto.FilterOn = "Category";  // Set the field you want to filter on
-            searchFilterDto.FilterQuery = "Books";  // Set the filter query
-            searchFilterDto.SortBy = "Name";        // Set the sorting field
-            searchFilterDto.IsAccending = true;     // Set the sorting direction
-            searchFilterDto.PageNumber = 1;         // Set the page number
-            searchFilterDto.PageSize = 10;          // Set the page size
+            //searchFilterDto.FilterOn = "Category";  // Set the field you want to filter on
+            //searchFilterDto.FilterQuery = "Books";  // Set the filter query
+            //searchFilterDto.SortBy = "Name";        // Set the sorting field
+            //searchFilterDto.IsAccending = true;     // Set the sorting direction
+            //searchFilterDto.PageNumber = 1;         // Set the page number
+            //searchFilterDto.PageSize = 10;          // Set the page size
             var searchDomainModel = mapper.Map<SearchFilter>(searchFilterDto);
             if (searchDomainModel == null)
             {

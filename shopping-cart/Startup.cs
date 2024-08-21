@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using SA51_CA_Project_Team10.DBs;
 using SA51_CA_Project_Team10.Mappings;
 using SA51_CA_Project_Team10.Models;
+using SA51_CA_Project_Team10.Repositories;
 
 namespace SA51_CA_Project_Team10
 {
@@ -37,7 +38,14 @@ namespace SA51_CA_Project_Team10
           Configuration.GetConnectionString("NZWalksAuthConnectionString")
           ));
             services.AddSingleton<Hasher>();
-
+            services.AddScoped<ICartRepository, SQLCartRepository>();
+            services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
+            services.AddScoped<IOrderItemRepository, SQLOrderItemRepository>();
+            services.AddScoped<IOrderRepository, SQLOrderRepository>();
+            services.AddScoped<IProductRepository, SQLProductRepository>();
+            services.AddScoped<ITokenRepository, SQLTokenRepository>();
+            services.AddScoped<IUserRepository, SQLUserRepository>();
+            services.AddScoped<IWalkRepository, SQLWalkRepository>();
             services.AddSingleton<Verify>();
             services.AddAutoMapper(typeof(AutoMapperProfiles));
         }
