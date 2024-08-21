@@ -32,7 +32,7 @@
             <tr>
                 @for (int j = i; j < i + Model.Columns && j < Model.DisplayedProducts.Count; ++j)
                 {
-                    string url = Model.DisplayedProducts[j].ImageUrl.StartsWith("~") ? Model.DisplayedProducts[j].ImageUrl.Substring(1) : Model.DisplayedProducts[j].ImageUrl;
+                    var url = string.IsNullOrEmpty(Model.DisplayedProducts[j].ImageUrl) ? "~/images/default.png" : Model.DisplayedProducts[j].ImageUrl;
 
                     <td class="galleryTtd celldiv" style="border: 2px solid black; width: 33%;">
                         <div id=@("urdiv" + Model.DisplayedProducts[j].Id) class="urdiv" data-product="@Model.DisplayedProducts[j].Id" data-average="@Model.AverageRating(Model.DisplayedProducts[j].Id)" data-rated="@Model.UserRating(Model.DisplayedProducts[j].Id)">

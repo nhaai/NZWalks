@@ -13,7 +13,7 @@ namespace SA51_CA_Project_Team10.Models.DTO
         public int? Quantity { get; set; }
         public int? Purchases { get; set; }
         public int? Views { get; set; }
-        public string? ImageUrl { get; set; }
+        public string? ImageUrl { get; set; } = string.Empty;
         [JsonPropertyName("active")]
         public bool? IsActive { get; set; }
         public int? CategoryId { get; set; }

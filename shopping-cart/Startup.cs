@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using SA51_CA_Project_Team10.DBs;
 using SA51_CA_Project_Team10.Mappings;
 using SA51_CA_Project_Team10.Models;
+using SA51_CA_Project_Team10.Models.Domain;
 using SA51_CA_Project_Team10.Repositories;
 
 namespace SA51_CA_Project_Team10
@@ -29,14 +31,12 @@ namespace SA51_CA_Project_Team10
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<NZWalksDbContext>(opt =>
-                opt.UseLazyLoadingProxies().UseSqlServer(
-                    Configuration.GetConnectionString("NZWalksConnectionString")
-                    ));
-            services.AddDbContext<NZWalksAuthDbContext>(opt =>
-      opt.UseLazyLoadingProxies().UseSqlServer(
-          Configuration.GetConnectionString("NZWalksAuthConnectionString")
-          ));
+            services.AddDbContext<NZWalksDbContext>(
+    options => options.UseSqlServer(Configuration.GetConnectionString("NZWalksConnectionString"))
+);
+            services.AddDbContext<NZWalksAuthDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("NZWalksAuthConnectionString"))
+            );
             services.AddSingleton<Hasher>();
             services.AddScoped<ICartRepository, SQLCartRepository>();
             services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
@@ -48,10 +48,15 @@ namespace SA51_CA_Project_Team10
             services.AddScoped<IWalkRepository, SQLWalkRepository>();
             services.AddSingleton<Verify>();
             services.AddAutoMapper(typeof(AutoMapperProfiles));
+
+            services.AddIdentity<User, Role>(options => options.Stores.MaxLengthForKeys = 128)
+    .AddTokenProvider<DataProtectorTokenProvider<User>>("NZWalks")
+    .AddEntityFrameworkStores<NZWalksAuthDbContext>()
+    .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, NZWalksDbContext db, NZWalksAuthDbContext dbc)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
