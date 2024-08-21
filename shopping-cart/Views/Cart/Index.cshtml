@@ -1,4 +1,5 @@
-﻿@model List<Cart>
+﻿@using SA51_CA_Project_Team10.Models.Domain
+@model List<Cart>
 
 @{
     ViewData["Title"] = "View Cart";
@@ -16,21 +17,21 @@
         {
             <tr id=@("row" + row)>
                 <td style="border:2px solid black;" width="50%">
-                    <img src="@c.Product.ImageLink.TrimStart('~')" />
-                    <p>@c.Product.Name</p>
-                    <p>@c.Product.Description</p>
+                  @*   <img src="@c.Product.ImageUrl.TrimStart('~')" /> *@
+                   @*  <p>@c.Product.Name</p>
+                    <p>@c.Product.Description</p> *@
                 </td>
                 <td>
                     <table>
                         <tr>
                             <td class="p-1 font-weight-bold text-right">Unit Price:</td>
-                            <td class="p-1 text-left" id="@("price" + c.ProductId)">@("$" + (c.Product.Price).ToString())</td>
+                          @*   <td class="p-1 text-left" id="@("price" + c.ProductId)">@("$" + (c.Product.Price).ToString())</td> *@
                         </tr>
                         <tr>
                             <td class="p-1 font-weight-bold text-right">Quantity:</td>
-                            <td class="p-1">
+                      @*       <td class="p-1">
                                 <input id="@("quantity" + c.ProductId)" class="productQuantity" type="number" min="1" max="100" value="@c.Quantity" style="width: 55px;" required /><input type="image" id="@("remove" + c.ProductId)" class="productRemove" data-row="@row" src="~/images/trash_white.png" width="25">
-                            </td>
+                            </td> *@
                         </tr>
                     </table>
                 </td>

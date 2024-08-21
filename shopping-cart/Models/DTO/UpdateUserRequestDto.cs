@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace SA51_CA_Project_Team10.Models
+namespace SA51_CA_Project_Team10.Models.DTO
 {
-    public class User : IdentityUser
+    public class UpdateUserRequestDto
     {
         public string? FullName { get; set; }
         public string? AddressLine1 { get; set; }
@@ -15,9 +11,12 @@ namespace SA51_CA_Project_Team10.Models
         public string? City { get; set; }
         public string? PostalCode { get; set; }
         public string? Country { get; set; }
+        [JsonPropertyName("avatar")]
         public string? AvatarUrl { get; set; }
+        [JsonPropertyName("active")]
         public bool? IsActive { get; set; }
         public string? Notes { get; set; }
-        public virtual ICollection<UserRole> UserRoles { get; set; } = default!;
+        public string? PhoneNumber { get; set; }
+        public string? Role { get; set; }
     }
 }

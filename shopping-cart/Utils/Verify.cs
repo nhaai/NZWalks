@@ -11,14 +11,14 @@ namespace SA51_CA_Project_Team10.DBs
 {
     public class Verify
     {
-        public bool VerifySession(string SessionId, DbT10Software _db) {
-            if (SessionId.IsNullOrEmpty())
-            {
-                return false;
-            } else
-            {                
-                return _db.Sessions.Where(x => x.Id == SessionId).ToList().Count != 0;
-            }
-        }
+        //public bool VerifySession(string SessionId, DbT10Software _db) {
+        //    if (SessionId.IsNullOrEmpty())
+        //    {
+        //        return false;
+        //    } else
+        //    {                
+        //        return _db.Sessions.Where(x => x.Id == SessionId).ToList().Count != 0;
+        //    }
+        //}
     }
 }

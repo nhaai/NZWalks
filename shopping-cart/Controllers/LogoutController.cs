@@ -10,20 +10,20 @@ namespace SA51_CA_Project_Team10.Controllers
 {
     public class LogoutController : Controller
     {
-        private readonly DbT10Software _db;
-        public LogoutController(DbT10Software db)
+        
+        public LogoutController()
         {
-            _db = db;
+           
         }
         public IActionResult Index()
         {
             string sessionId = HttpContext.Request.Cookies["sessionId"];
 
-            _db.Sessions.Remove(new Session()
-            {
-                Id = sessionId
-            });
-            _db.SaveChanges();
+            //_db.Sessions.Remove(new Session()
+            //{
+            //    Id = sessionId
+            //});
+            //_db.SaveChanges();
 
             HttpContext.Response.Cookies.Delete("sessionId");
 
