@@ -20,12 +20,13 @@ namespace SA51_CA_Project_Team10.Models.DTO
         // Example: row = 3, column = 4 means that there should be 3 rows and 4 columns total in a page (12 products total)
         public GalleryViewModel(User user, int page, StaticPagedList<ProductDto> productsPagedList)
         {
-            Columns = productsPagedList.PageSize; // Assuming that Columns represent page size here
+            //Columns = productsPagedList.PageSize; // Assuming that Columns represent page size here
             Page = page;
             TotalProducts = productsPagedList.TotalItemCount;
             TotalPage = productsPagedList.PageCount;
             DisplayedProducts = productsPagedList.ToList();
             User = user;
+            Columns = 4;
         }
 
         //public GalleryViewModel(User user, int page, List<Product> products) : this(4, 3, user, page, products) { }

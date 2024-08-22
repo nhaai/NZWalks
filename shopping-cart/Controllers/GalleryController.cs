@@ -77,7 +77,9 @@ namespace SA51_CA_Project_Team10.Controllers
         [HttpPost]
         public IActionResult AddCart(int productId) {
             string sessionId = HttpContext.Request.Cookies["sessionId"];
+            var jwtToken = HttpContext.Request.Cookies["JwtToken"];
 
+            int userId;
             //if (_v.VerifySession(sessionId, _db))
             //{
             //    int userid = _db.Sessions.FirstOrDefault(x => x.Id == sessionId).UserId;

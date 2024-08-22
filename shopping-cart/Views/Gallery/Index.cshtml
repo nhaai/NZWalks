@@ -10,11 +10,56 @@
 @{
     ViewData["Title"] = "Libraries Gallery";
     string searchbarValue = ViewData["Searchbar"]?.ToString() ?? string.Empty;  // Use a default value if null
+    int columns = 4;
 }
-
 <style>
-    /* Styles here */
+    .gallery {
+        width: 100%;
+        border-spacing: 20px; /* Khoảng cách giữa các ô */
+        table-layout: fixed; /* Đảm bảo các ô có kích thước cố định */
+    }
+
+    .galleryTtd {
+        border: 2px solid black;
+        padding: 15px;
+        box-sizing: border-box; /* Đảm bảo padding và border được tính trong chiều rộng */
+        width: 100%; /* Đảm bảo ô chiếm toàn bộ chiều rộng của ô trong bảng */
+        text-align: center; /* Căn giữa nội dung trong ô */
+    }
+
+    .celldiv {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    td {
+        width: 25%; /* Đảm bảo mỗi ô chiếm 25% chiều rộng của hàng */
+        vertical-align: top; /* Căn chỉnh nội dung theo phía trên của ô */
+    }
+
+    .galleryTtd img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%; /* Điều chỉnh kích thước hình ảnh */
+        max-width: 150px; /* Đảm bảo hình ảnh không quá lớn */
+        height: auto; /* Duy trì tỷ lệ khung hình */
+    }
+
+    .bdiv {
+        margin-top: 15px;
+        width: 100%; /* Đảm bảo nút bấm chiếm toàn bộ chiều rộng của ô */
+        text-align: center;
+    }
+
+
+
 </style>
+
+
+
+
 
 <div style="text-align:center">
     <form class="inlinef" action="/Gallery/Index" method="get">
@@ -24,47 +69,36 @@
     </form>
 </div>
 
-<table class="gallery" style="border-spacing: 20px 20px; border-collapse: separate; table-layout: fixed;" border="0">
+<table class="gallery" border="0">
     @if (Model?.DisplayedProducts != null && Model.DisplayedProducts.Count > 0)
     {
-        @for (int i = 0; i < Model.DisplayedProducts.Count; i += Model.Columns)
+        @for (int i = 0; i < Model.DisplayedProducts.Count; i += columns)
         {
             <tr>
-                @for (int j = i; j < i + Model.Columns && j < Model.DisplayedProducts.Count; ++j)
+                @for (int j = i; j < i + columns && j < Model.DisplayedProducts.Count; ++j)
                 {
                     var url = string.IsNullOrEmpty(Model.DisplayedProducts[j].ImageUrl) ? "~/images/default.png" : Model.DisplayedProducts[j].ImageUrl;
 
-                    <td class="galleryTtd celldiv" style="border: 2px solid black; width: 33%;">
-                        <div id=@("urdiv" + Model.DisplayedProducts[j].Id) class="urdiv" data-product="@Model.DisplayedProducts[j].Id" data-average="@Model.AverageRating(Model.DisplayedProducts[j].Id)" data-rated="@Model.UserRating(Model.DisplayedProducts[j].Id)">
-                            <span id="@("rating" + Model.DisplayedProducts[j].Id)">Average rating:</span>
-                            @for (int k = 1; k <= 5; k++)
-                            {
-                                <img class="@("stars" + j)" style="cursor: pointer;" name=@("star" + k) src="~/images/blank_star.png" width="20" />
-                            }
-                        </div>
-                        <br /><br />
+                    <td class="galleryTtd celldiv">
                         <img src="@url" width="75" height="80" />
                         <h2>@Model.DisplayedProducts[j].Name</h2>
                         <p>@Model.DisplayedProducts[j].Description</p>
-                        <br /><br />
-                        <div class="bdiv w-100">
-                            <button class="productbtn btn btn-outline-dark" type="button" productId="@Model.DisplayedProducts[j].Id">$@Model.DisplayedProducts[j].UnitPrice - Add To Cart</button>
-                        </div>
+                        <button class="productbtn btn btn-outline-dark" type="button" productId="@Model.DisplayedProducts[j].Id">$@Model.DisplayedProducts[j].UnitPrice - Add To Cart</button>
                     </td>
                 }
-            </tr>
-        }
-        @if (Model.DisplayedProducts.Count % Model.Columns != 0)
-        {
-            <tr>
-                @for (int k = 0; k < Model.Columns - (Model.DisplayedProducts.Count % Model.Columns); k++)
+                <!-- Thêm các ô trống nếu số sản phẩm không chia hết cho 4 -->
+                @if (Model.DisplayedProducts.Count % columns != 0)
                 {
-                    <td class="celldiv" style="width: 33%;"></td>
+                    @for (int k = 0; k < columns - (Model.DisplayedProducts.Count % columns); k++)
+                    {
+                        <td class="galleryTtd celldiv"></td>
+                    }
                 }
             </tr>
         }
     }
 </table>
+
 
 @if (Model?.TotalPage > 1)
 {
@@ -99,3 +133,4 @@
         }
     </div>
 }
+ 
